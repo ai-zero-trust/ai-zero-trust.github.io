@@ -15,6 +15,7 @@ The single-page standard is published at [ai-zero-trust.github.io](https://ai-ze
 - [Standard Deployment Profile](docs/profiles/AIZTA-Standard-Deployment-v0.1.md): Baseline deployment requirements for R0-R2 workflows.
 - [High-Impact Deployment Profile](docs/profiles/AIZTA-High-Impact-Deployment-v0.1.md): Additional controls for R3-R4 workflows.
 - [Assessment Methodology](docs/AIZTA-Assessment-Methodology-v0.1.md): Evidence, sampling, testing, scoring, and reporting.
+- [Reference Implementation](reference/README.md): Minimal deterministic policy decision point and tests.
 - [High-Level Design (HLD)](docs/AI-Zero-Trust-HLD.md): Organization governance, scope, reference architecture, trust model, maturity, and adoption roadmap.
 - [Low-Level Design (LLD)](docs/AI-Zero-Trust-LLD.md): Component responsibilities, decision flow, object model, interfaces, policies, controls, evidence, and testing.
 
