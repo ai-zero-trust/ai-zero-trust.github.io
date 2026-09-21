@@ -2,6 +2,10 @@
 
 AI Zero Trust Alliance (AIZTA) is an open standards project for AI systems. It uses an industry benchmark organization model to define verifiable AI zero trust controls, assessment methods, and reference implementations.
 
+## Website
+
+The single-page standard is published at [ai-zero-trust.github.io](https://ai-zero-trust.github.io/).
+
 ## Design Documents
 
 - [High-Level Design (HLD)](docs/AI-Zero-Trust-HLD.md): Organization governance, scope, reference architecture, trust model, maturity, and adoption roadmap.
