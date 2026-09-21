@@ -8,6 +8,7 @@ The single-page standard is published at [ai-zero-trust.github.io](https://ai-ze
 
 ## Design Documents
 
+- [Strategy and Roadmap](docs/AIZTA-Strategy-and-Roadmap.md): Standard positioning, reference frameworks, profiles, and the next implementation phases.
 - [High-Level Design (HLD)](docs/AI-Zero-Trust-HLD.md): Organization governance, scope, reference architecture, trust model, maturity, and adoption roadmap.
 - [Low-Level Design (LLD)](docs/AI-Zero-Trust-LLD.md): Component responsibilities, decision flow, object model, interfaces, policies, controls, evidence, and testing.
 
