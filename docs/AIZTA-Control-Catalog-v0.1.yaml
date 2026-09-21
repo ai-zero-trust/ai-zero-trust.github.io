@@ -1,0 +1,423 @@
+catalog_version: "0.1.0"
+name: AIZTA Control Catalog
+status: public-draft
+controls:
+  - id: AZT-GOV-001
+    title: System Boundary
+    domain: GOV
+    objective: Define the AI system, assets, workflows, tenants, and trust boundaries in scope.
+    requirement: The system owner MUST maintain an approved and versioned system boundary.
+    risk_levels: [R0, R1, R2, R3, R4]
+    owner: System Owner
+    evidence: [{type: inventory, description: Approved system boundary and asset register}]
+    tests: {positive: [Review current boundary against deployed assets], negative: [Attempt to operate an unregistered asset]}
+    exceptions: {required_fields: [owner, reason, expiry, approval], max_duration: 90d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-GOV-002
+    title: Risk Assignment
+    domain: GOV
+    objective: Ensure protected workflows receive an explicit risk level before release.
+    requirement: The system owner MUST assign and approve the highest applicable risk level before a workflow is released.
+    risk_levels: [R0, R1, R2, R3, R4]
+    owner: Risk Owner
+    evidence: [{type: report, description: Workflow risk assessment and approval}]
+    tests: {positive: [Verify a released workflow has an approved risk level], negative: [Block release when risk assignment is missing]}
+    exceptions: {required_fields: [owner, reason, expiry, approval], max_duration: 30d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-IDENT-001
+    title: Unique Subject Identity
+    domain: IDENT
+    objective: Prevent anonymous or shared identities from receiving protected authority.
+    requirement: Every protected user, service, agent, and workload MUST use a unique and revocable identity.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Identity Owner
+    evidence: [{type: configuration, description: Identity provider configuration and token policy}, {type: test_result, description: Identity uniqueness and revocation test}]
+    tests: {positive: [Authenticate a registered subject], negative: [Reject a shared, unknown, or revoked identity]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 30d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-IDENT-002
+    title: Short-Lived Credentials
+    domain: IDENT
+    objective: Limit the impact of stolen or replayed credentials.
+    requirement: Protected actions MUST use credentials with a defined lifetime and MUST reject expired credentials.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Identity Owner
+    evidence: [{type: configuration, description: Credential lifetime and revocation settings}, {type: decision_log, description: Expiry decision events}]
+    tests: {positive: [Accept a current credential within scope], negative: [Reject an expired credential and replay]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-DELEG-001
+    title: Bounded Delegation
+    domain: DELEG
+    objective: Prevent agents from inheriting unrestricted principal authority.
+    requirement: Agent authority MUST bind to a delegating principal, purpose, resource scope, and expiry.
+    risk_levels: [R1, R2, R3, R4]
+    owner: System Owner
+    evidence: [{type: decision_log, description: Delegation record with principal, purpose, scope, and expiry}]
+    tests: {positive: [Execute an action within delegated scope], negative: [Reject an action outside scope or after delegation expiry]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-POL-001
+    title: Explicit Authorization Decision
+    domain: POL
+    objective: Ensure every protected action is evaluated against current policy.
+    requirement: Every R1 or higher action MUST receive an explicit versioned authorization decision before execution.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Policy Owner
+    evidence: [{type: decision_log, description: Decision with policy identifier and version}]
+    tests: {positive: [Allow an action matching policy], negative: [Reject an action with no applicable policy]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-POL-002
+    title: Policy Lifecycle
+    domain: POL
+    objective: Prevent unreviewed or mutable policies from controlling production actions.
+    requirement: Production policy MUST be versioned, reviewed, approved, immutable, and reversible.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Policy Owner
+    evidence: [{type: approval, description: Policy review and approval record}, {type: inventory, description: Published policy versions and rollback target}]
+    tests: {positive: [Reproduce a decision using its policy version], negative: [Reject an unsigned or unpublished policy]}
+    exceptions: {required_fields: [owner, reason, expiry, approval], max_duration: 30d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-POL-003
+    title: Separation of Duties
+    domain: POL
+    objective: Prevent one actor from unilaterally granting and using high-impact authority.
+    requirement: R3 policy publication and R3 approval MUST require two independent authorized parties.
+    risk_levels: [R3, R4]
+    owner: Governance Owner
+    evidence: [{type: approval, description: Two independent approval identities}]
+    tests: {positive: [Publish with two distinct approvers], negative: [Reject duplicate or self-approval]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-ENFORCE-001
+    title: Server-Side Enforcement
+    domain: ENFORCE
+    objective: Prevent clients or models from bypassing authorization.
+    requirement: Protected resources MUST enforce authorization at a server-side boundary independent of client or model claims.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Platform Owner
+    evidence: [{type: configuration, description: Gateway or service enforcement configuration}, {type: test_result, description: Direct-bypass test result}]
+    tests: {positive: [Allow a valid decision through the boundary], negative: [Reject direct backend access without a decision]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-ENFORCE-002
+    title: Fail-Closed High Risk
+    domain: ENFORCE
+    objective: Prevent dependency failures from silently granting high-impact authority.
+    requirement: R2 and higher actions MUST be denied or routed to approved human handling when a critical control dependency is unavailable.
+    risk_levels: [R2, R3, R4]
+    owner: Platform Owner
+    evidence: [{type: exercise, description: Dependency failure and denial exercise}]
+    tests: {positive: [Use an available dependency for a valid action], negative: [Simulate dependency failure and verify denial]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-DATA-001
+    title: Data Classification
+    domain: DATA
+    objective: Ensure policy decisions account for data sensitivity.
+    requirement: Protected data MUST have a classification that is available to authorization policy.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Data Owner
+    evidence: [{type: inventory, description: Data classification register and policy mapping}]
+    tests: {positive: [Apply the correct policy to each classification], negative: [Block access to unclassified protected data]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 30d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-DATA-002
+    title: Tenant Isolation
+    domain: DATA
+    objective: Prevent cross-tenant data exposure through retrieval, cache, logs, and tools.
+    requirement: A protected request MUST be constrained to its tenant and MUST reject cross-tenant references.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Data Owner
+    evidence: [{type: test_result, description: Cross-tenant isolation test}, {type: configuration, description: Tenant filtering policy}]
+    tests: {positive: [Retrieve data within the current tenant], negative: [Attempt cross-tenant retrieval and cache access]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-DATA-003
+    title: Context Provenance
+    domain: DATA
+    objective: Make the origin and trust level of prompts, retrieval, and tool content visible.
+    requirement: External or retrieved context MUST carry provenance and MUST be treated as untrusted instructions.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Data Owner
+    evidence: [{type: decision_log, description: Context source and trust labels}]
+    tests: {positive: [Preserve provenance through retrieval], negative: [Inject an instruction in retrieved content and verify it cannot expand authority]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-MODEL-001
+    title: Model Registration
+    domain: MODEL
+    objective: Prevent unknown or unapproved models from handling protected workloads.
+    requirement: A production model MUST be registered with an owner, source, version, status, and approved use scope.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Model Owner
+    evidence: [{type: inventory, description: Model register and approval record}]
+    tests: {positive: [Route a request to an approved model], negative: [Reject an unregistered model]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-MODEL-002
+    title: Model Version Integrity
+    domain: MODEL
+    objective: Detect unapproved model replacement or drift.
+    requirement: A production model deployment MUST be pinned to an integrity identifier and MUST be checked before use.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Model Owner
+    evidence: [{type: attestation, description: Model digest or integrity attestation}, {type: execution_log, description: Runtime version used}]
+    tests: {positive: [Run with the approved model digest], negative: [Reject a digest mismatch]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-AGENT-001
+    title: Agent Capability Boundary
+    domain: AGENT
+    objective: Prevent an agent from expanding its own tools, data, or privileges.
+    requirement: An agent MUST operate within an approved capability allowlist and MUST NOT modify that allowlist at runtime.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Agent Owner
+    evidence: [{type: configuration, description: Agent capability allowlist}, {type: test_result, description: Privilege expansion test}]
+    tests: {positive: [Use an allowlisted capability], negative: [Attempt to self-register a tool or permission]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-TOOL-001
+    title: Tool Registration
+    domain: TOOL
+    objective: Prevent unreviewed tools from receiving agent traffic.
+    requirement: A tool MUST be registered with an owner, endpoint, capabilities, data scope, and lifecycle status before invocation.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Tool Owner
+    evidence: [{type: inventory, description: Tool register and approved capability list}]
+    tests: {positive: [Invoke an approved tool], negative: [Reject an unknown or disabled tool]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-TOOL-002
+    title: Tool Request Validation
+    domain: TOOL
+    objective: Prevent malformed or manipulated tool calls.
+    requirement: A tool enforcement point MUST validate the requested resource, parameters, scope, expiry, and idempotency before execution.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Tool Owner
+    evidence: [{type: execution_log, description: Validated request and execution result}, {type: test_result, description: Negative parameter test}]
+    tests: {positive: [Execute a schema-valid request], negative: [Reject invalid parameters, target replacement, and expired scope]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-TOOL-003
+    title: High-Impact Tool Approval
+    domain: TOOL
+    objective: Prevent irreversible actions without human control.
+    requirement: R2 and R3 tool actions MUST require confirmation or approval bound to the exact request scope and digest.
+    risk_levels: [R2, R3]
+    owner: Tool Owner
+    evidence: [{type: approval, description: Approval bound to request digest, scope, and expiry}]
+    tests: {positive: [Approve and execute the exact request], negative: [Reuse approval for a changed request or scope]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-TOOL-004
+    title: Tool Recovery
+    domain: TOOL
+    objective: Limit the impact of failed or harmful tool execution.
+    requirement: An R2 or R3 tool action MUST provide rollback, revocation, compensation, or a documented recovery path.
+    risk_levels: [R2, R3]
+    owner: Tool Owner
+    evidence: [{type: exercise, description: Recovery exercise and result}]
+    tests: {positive: [Execute and recover a test action], negative: [Block release when no recovery path exists]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 30d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-SAFETY-001
+    title: Input Safety
+    domain: SAFETY
+    objective: Detect and handle unsafe or adversarial inputs before model execution.
+    requirement: The system MUST apply input safety checks appropriate to the workflow risk and MUST define block, constrain, or review behavior.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Safety Owner
+    evidence: [{type: configuration, description: Input safety policy}, {type: test_result, description: Adversarial input test results}]
+    tests: {positive: [Process an allowed input], negative: [Block or route an unsafe and injection-shaped input]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-SAFETY-002
+    title: Output Safety
+    domain: SAFETY
+    objective: Prevent unsafe, unauthorized, or ungrounded outputs from reaching users or tools.
+    requirement: The system MUST apply output checks before delivery or downstream action when the workflow risk requires them.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Safety Owner
+    evidence: [{type: configuration, description: Output safety policy}, {type: test_result, description: Output handling test results}]
+    tests: {positive: [Deliver a checked output], negative: [Block, redact, or review a failing output]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-SUP-001
+    title: Supply Chain Inventory
+    domain: SUP
+    objective: Make AI components and dependencies accountable and reviewable.
+    requirement: Models, datasets, plugins, tools, runtimes, and critical dependencies MUST be inventoried with owners and versions.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Supply Chain Owner
+    evidence: [{type: inventory, description: AI component inventory and dependency record}]
+    tests: {positive: [Trace a deployed component to its inventory record], negative: [Block an unregistered dependency]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 30d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-SUP-002
+    title: Integrity Verification
+    domain: SUP
+    objective: Detect tampering or substitution of AI assets.
+    requirement: Protected AI assets MUST have an integrity identifier and MUST be verified before deployment or use.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Supply Chain Owner
+    evidence: [{type: attestation, description: Integrity verification result}]
+    tests: {positive: [Deploy an asset with a valid integrity claim], negative: [Reject a changed asset]}
+    exceptions: {required_fields: [owner, reason, compensating_control, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-OBS-001
+    title: Decision Evidence
+    domain: OBS
+    objective: Make authorization decisions reconstructable.
+    requirement: Each R1 or higher decision MUST record the subject, action, resource, policy version, effect, reason, and evidence references.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Evidence Owner
+    evidence: [{type: decision_log, description: Complete decision event}]
+    tests: {positive: [Reconstruct a sampled decision], negative: [Reject a decision event missing required fields]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-OBS-002
+    title: Tamper-Evident Evidence
+    domain: OBS
+    objective: Detect unauthorized modification or deletion of audit evidence.
+    requirement: Decision and execution evidence MUST be append-only or protected by an integrity mechanism.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Evidence Owner
+    evidence: [{type: configuration, description: Retention and integrity configuration}, {type: test_result, description: Evidence tamper test}]
+    tests: {positive: [Verify an event integrity claim], negative: [Detect modified or deleted evidence]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-RESP-001
+    title: Revocation
+    domain: RESP
+    objective: Stop compromised or no-longer-authorized activity.
+    requirement: The organization MUST be able to revoke subject credentials, delegations, sessions, tools, and asset status within a defined time.
+    risk_levels: [R1, R2, R3, R4]
+    owner: Response Owner
+    evidence: [{type: exercise, description: Revocation exercise and measured time}]
+    tests: {positive: [Revoke a test subject and confirm denial], negative: [Attempt use after revocation]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 14d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-RESP-002
+    title: Quarantine
+    domain: RESP
+    objective: Contain suspicious subjects, context, models, tools, or workflows.
+    requirement: The system MUST provide an authorized quarantine action that prevents further protected execution.
+    risk_levels: [R2, R3, R4]
+    owner: Response Owner
+    evidence: [{type: exercise, description: Quarantine exercise and containment result}]
+    tests: {positive: [Quarantine a test asset], negative: [Verify quarantined assets cannot execute protected actions]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 7d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-ASSESS-001
+    title: Negative Control Testing
+    domain: ASSESS
+    objective: Demonstrate that controls reject invalid, abusive, or out-of-scope behavior.
+    requirement: Each claimed control MUST have at least one documented positive test and one negative test.
+    risk_levels: [R0, R1, R2, R3, R4]
+    owner: Assessment Owner
+    evidence: [{type: test_result, description: Test cases, results, timestamps, and asset versions}]
+    tests: {positive: [Run the control success case], negative: [Run the documented rejection case]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 30d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
+
+  - id: AZT-ASSESS-003
+    title: Exception Governance
+    domain: ASSESS
+    objective: Prevent temporary deviations from becoming invisible permanent risk.
+    requirement: Every control exception MUST be reviewed before expiry and MUST be closed, renewed, or escalated with a new approval.
+    risk_levels: [R0, R1, R2, R3, R4]
+    owner: Governance Owner
+    evidence: [{type: report, description: Exception register and review history}]
+    tests: {positive: [Review an active exception before expiry], negative: [Detect and escalate an expired exception]}
+    exceptions: {required_fields: [owner, reason, risk_acceptance, expiry, approval], max_duration: 30d}
+    profiles: [core]
+    version: "0.1.0"
+    status: active
