@@ -1,0 +1,102 @@
+schema_version: "0.1"
+name: AIZTA Control Catalog
+status: public-draft
+control:
+  required:
+    - id
+    - title
+    - domain
+    - objective
+    - requirement
+    - risk_levels
+    - owner
+    - evidence
+    - tests
+    - version
+  properties:
+    id:
+      type: string
+      pattern: "^AZT-[A-Z]+-[0-9]{3}$"
+      description: Stable control identifier; identifiers are never reused.
+    title:
+      type: string
+      description: Short, action-oriented control title.
+    domain:
+      type: string
+      enum:
+        - GOV
+        - IDENT
+        - DELEG
+        - POL
+        - ENFORCE
+        - DATA
+        - MODEL
+        - AGENT
+        - TOOL
+        - SAFETY
+        - SUP
+        - OBS
+        - RESP
+        - ASSESS
+    objective:
+      type: string
+      description: Security outcome the control is intended to achieve.
+    requirement:
+      type: string
+      description: Normative, testable requirement using AIZTA requirement keywords.
+    risk_levels:
+      type: array
+      items:
+        type: string
+        enum: [R0, R1, R2, R3, R4]
+      minItems: 1
+    owner:
+      type: string
+      description: Accountable role or organization.
+    implementation_guidance:
+      type: string
+      description: Non-normative implementation guidance.
+    evidence:
+      type: array
+      minItems: 1
+      items:
+        type: object
+        required: [type, description]
+        properties:
+          type:
+            type: string
+            enum: [configuration, inventory, decision_log, execution_log, test_result, approval, exercise, attestation, report]
+          description:
+            type: string
+          retention:
+            type: string
+    tests:
+      type: object
+      required: [positive, negative]
+      properties:
+        positive:
+          type: array
+          minItems: 1
+          items: {type: string}
+        negative:
+          type: array
+          minItems: 1
+          items: {type: string}
+    exceptions:
+      type: object
+      required: [required_fields, max_duration]
+      properties:
+        required_fields:
+          type: array
+          items: {type: string}
+        max_duration:
+          type: string
+    profiles:
+      type: array
+      items: {type: string}
+    version:
+      type: string
+      pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    status:
+      type: string
+      enum: [draft, proposed, active, deprecated]

@@ -7,7 +7,7 @@
 
 The AI Zero Trust Alliance (AIZTA) is an open standards organization modeled on industry benchmark bodies. It maintains AI zero trust baselines, control requirements, implementation guidance, assessment methods, and certification programs.
 
-AIZTA complements laws, sector regulations, ISO standards, NIST guidance, and other frameworks. It adds a verifiable control layer for AI-specific risks:
+AIZTA defines an independent, verifiable control layer for AI-specific risks:
 
 - Models and agents generate behavior dynamically and cannot be trusted based only on static identity.
 - Prompts, context, tool calls, and outputs are all potential attack surfaces.
