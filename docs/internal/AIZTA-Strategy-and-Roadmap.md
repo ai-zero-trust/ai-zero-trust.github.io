@@ -1,16 +1,18 @@
 # AIZTA Strategy and Roadmap
 
+> Internal working reference. This document is not part of the public AIZTA standard and should not be linked from public product or standards material.
+
 **Status**: Working reference v0.1  
 **Organization**: AI Zero Trust Alliance (AIZTA)  
 **Last reviewed**: 2026-09-21
 
-## 1. Purpose
+## Purpose
 
 This document records the strategic direction for AIZTA. It is a working reference for future standards, profiles, implementation guides, assessment tooling, and community discussions.
 
 AIZTA should begin as a small, public, implementation-oriented standard. The scope can grow over time, but the first release must be understandable, testable, and useful without requiring an organization to adopt a specific cloud, model vendor, or programming language.
 
-## 2. Strategic Positioning
+## Strategic Positioning
 
 AIZTA is a vendor-neutral technical control standard for enforcing zero trust across AI applications, agents, models, data, tools, and AI supply chains.
 
@@ -23,24 +25,17 @@ AIZTA is not:
 
 AIZTA may describe its relationships using precise terms such as **aligned with**, **mapped to**, **informed by**, and **compatible with**. It must not imply endorsement, affiliation, or certification by another organization without a written agreement.
 
-## 3. Relationship to Existing Frameworks
+## Relationship to Existing Frameworks
 
-### 3.1 ISO/IEC 42001
+### ISO/IEC 42001
 
 ISO/IEC 42001:2023 defines requirements for an Artificial Intelligence Management System (AIMS). It provides the organizational governance layer for managing AI-related risks and opportunities.
 
-AIZTA provides technical controls and evidence that can support an AIMS. The relationship is:
-
-```text
-ISO/IEC 42001 = organizational AI management system
-AIZTA          = technical AI zero trust controls and evidence
-```
-
-AIZTA should produce an informative mapping to ISO/IEC 42001. The mapping must explain which AIZTA evidence may support an AIMS and must not claim that implementing AIZTA alone achieves ISO/IEC 42001 certification.
+AIZTA provides technical controls and evidence that can support an AIMS. AIZTA should produce an informative mapping to ISO/IEC 42001 and must not claim that implementing AIZTA alone achieves certification.
 
 Reference: [ISO/IEC 42001:2023](https://www.iso.org/standard/81230.html)
 
-### 3.2 ACSC and ASD
+### ACSC and ASD
 
 ACSC and ASD guidance is a high-value public-sector and Australian security reference. Relevant material includes secure AI system development, secure deployment, AI data security, AI/ML supply-chain risk, agentic AI, the Essential Eight, and the Information Security Manual.
 
@@ -48,7 +43,7 @@ AIZTA should provide an **Australia Profile** that maps AIZTA controls to select
 
 Reference: [ACSC Artificial Intelligence guidance](https://www.cyber.gov.au/business-government/secure-design/artificial-intelligence)
 
-### 3.3 CIS
+### CIS
 
 CIS is a useful model for turning expert guidance into practical controls, implementation groups, benchmarks, and assessment material. AIZTA should learn from this operating model while remaining an independent project.
 
@@ -56,29 +51,25 @@ The proposed AIZTA structure is:
 
 ```text
 AIZTA Framework
-  -> AIZTA Controls
-  -> AI Safeguards
-  -> Risk Profiles
-  -> Platform Profiles
-  -> Assessment Methodology
-  -> Evidence Packs
+	-> AIZTA Controls
+	-> AI Safeguards
+	-> Risk Profiles
+	-> Platform Profiles
+	-> Assessment Methodology
+	-> Evidence Packs
 ```
 
 Reference: [Center for Internet Security](https://www.cisecurity.org/)
 
-### 3.4 RFC and BCP 14
+### RFC and BCP 14
 
 AIZTA normative documents should use the requirements language defined by RFC 2119 and clarified by RFC 8174. The words `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY`, and related terms have special meaning only when written in uppercase.
 
 The standard should also use RFC 9457 Problem Details for machine-readable HTTP API errors where an API needs a common error representation.
 
-References:
+References: [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119), [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174), [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457)
 
-- [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119)
-- [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174)
-- [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457)
-
-### 3.5 Microsoft Foundry
+### Microsoft Foundry
 
 Microsoft Foundry is a valuable implementation reference and an early platform profile candidate. Its model catalog, agent services, tools, observability, evaluation, control plane, and content safety features provide concrete integration points.
 
@@ -86,7 +77,7 @@ Microsoft-specific features must be documented as an **implementation profile**,
 
 Reference: [Microsoft Foundry documentation](https://learn.microsoft.com/en-us/azure/foundry/)
 
-## 4. Guardrail Strategy
+## Guardrail Strategy
 
 Microsoft Foundry default safety controls may be used as a baseline implementation for the input and output safety portion of AIZTA. They do not constitute the complete AIZTA guardrail model.
 
@@ -98,17 +89,9 @@ the risk profile, record whether the controls executed, and define behavior
 when a safety dependency is unavailable.
 ```
 
-A Microsoft Foundry profile may satisfy this requirement if it verifies the configured categories, thresholds, prompt-attack controls, output behavior, annotations, logging, and failure handling.
+Guardrails do not replace identity, delegation, authorization, data classification, tenant isolation, model and tool provenance, tool parameter validation, action approval, revocation, rollback, audit evidence, or incident response.
 
-Guardrails do not replace:
-
-- Identity, delegation, and authorization.
-- Data classification and tenant isolation.
-- Model and tool provenance.
-- Tool parameter validation and action approval.
-- Revocation, rollback, audit evidence, and incident response.
-
-## 5. Standard Architecture
+## Standard Architecture
 
 The standard should be published as four related layers:
 
@@ -116,12 +99,12 @@ The standard should be published as four related layers:
 |---|---|---|
 | Framework | Principles, scope, terminology, architecture, maturity | AIZTA Framework v0.1 |
 | Controls | Testable requirements and evidence | AIZTA Control Catalog v0.1 |
-| Profiles | Platform, industry, and jurisdiction adaptations | Microsoft Foundry and Australia profiles |
+| Profiles | Platform, industry, and jurisdiction adaptations | Platform and jurisdiction profiles |
 | Assessment | Test procedures, scoring, exceptions, and reports | AIZTA Assessment Methodology v0.1 |
 
 The existing HLD and LLD remain supporting architecture documents. They should be aligned to the Framework and Control Catalog as those artifacts mature.
 
-## 6. Initial Risk Profiles
+## Initial Risk Profiles
 
 The first release should avoid a large, abstract taxonomy. Start with three operational profiles:
 
@@ -139,24 +122,13 @@ Risk tiers remain useful across profiles:
 - **R3**: High-impact or production actions requiring human control.
 - **R4**: Irreversible or large-scale high-impact automation, prohibited by default.
 
-## 7. Control Catalog Requirements
+## Control Catalog Requirements
 
-The first catalog should contain approximately 30 controls rather than attempting to cover every AI risk. Each control must include:
+The first catalog should contain approximately 30 controls. Each control must include a stable ID, security objective, risk tier, normative requirement, responsible party, implementation guidance, test method, negative test, minimum evidence, exception expiry, profile mappings, and version history.
 
-- Stable ID and title.
-- Security objective and risk tier.
-- Normative requirement using BCP 14 language.
-- Responsible party.
-- Implementation guidance.
-- Test method and negative test.
-- Minimum evidence.
-- Exception and expiry requirements.
-- Profile mappings.
-- Version and change history.
+Initial domains are identity, delegation, policy, enforcement, data, context, models, agents, tools, safety, supply chain, observability, response, testing, and exceptions.
 
-The initial domains are identity, delegation, policy, enforcement, data, context, models, agents, tools, safety, supply chain, observability, response, testing, and exceptions.
-
-## 8. Assessment Model
+## Assessment Model
 
 An assessment should produce one of four results per control:
 
@@ -164,15 +136,11 @@ An assessment should produce one of four results per control:
 pass | partial | fail | not_applicable
 ```
 
-Every result must reference evidence, test time, asset version, policy version, and exception ID where applicable. A report must distinguish:
-
-- **Conformance**: Whether a requirement was met.
-- **Effectiveness**: Whether the control worked under testing.
-- **Coverage**: Which assets, tenants, models, tools, and workflows were included.
+Every result must reference evidence, test time, asset version, policy version, and exception ID where applicable. A report must distinguish conformance, effectiveness, and coverage.
 
 An AIZTA report must not be presented as ISO certification, government approval, or vendor endorsement.
 
-## 9. Roadmap
+## Roadmap
 
 ### Phase 1: Foundation
 
@@ -208,7 +176,7 @@ An AIZTA report must not be presented as ISO certification, government approval,
 - Version the specification based on reviewed changes.
 - Delay certification claims until governance, assessor independence, and appeals are defined.
 
-## 10. Immediate Next Deliverables
+## Immediate Next Deliverables
 
 The next implementation batch should create:
 
@@ -229,16 +197,6 @@ Browse Controls
 View Mappings
 ```
 
-## 11. Governance Guardrails
+## Governance Guardrails
 
-AIZTA should not claim official status or certification authority prematurely. The project should maintain:
-
-- A public change log.
-- A conflict-of-interest policy.
-- A public comment process.
-- A vulnerability disclosure process.
-- Versioned normative documents.
-- Clear separation between Core Controls and vendor profiles.
-- A statement that references are mappings, not endorsements.
-
-This governance layer is necessary before any future certification mark, assessor program, or formal organizational claim.
+AIZTA should not claim official status or certification authority prematurely. The project should maintain a public change log, conflict-of-interest policy, public comment process, vulnerability disclosure process, versioned normative documents, clear separation between Core Controls and vendor profiles, and a statement that references are mappings rather than endorsements.
